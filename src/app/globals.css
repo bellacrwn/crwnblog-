@@ -1,0 +1,41 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #07080d;
+  --panel: #0e1018;
+  --line: #1e2230;
+}
+
+html, body { background: var(--bg); color: #e6e8ef; }
+
+body {
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background-image:
+    radial-gradient(60rem 30rem at 15% -10%, rgba(99,102,241,.16), transparent 60%),
+    radial-gradient(50rem 28rem at 95% 0%, rgba(34,211,238,.10), transparent 60%);
+  background-attachment: fixed;
+}
+
+.panel { background: var(--panel); border: 1px solid var(--line); }
+
+.prose-crwn { line-height: 1.75; font-size: 1.06rem; }
+.prose-crwn p { margin: 1.05rem 0; }
+.prose-crwn h2 { font-size: 1.5rem; font-weight: 700; margin: 2rem 0 .75rem; }
+.prose-crwn h3 { font-size: 1.22rem; font-weight: 700; margin: 1.6rem 0 .6rem; }
+.prose-crwn ul, .prose-crwn ol { margin: 1rem 0 1rem 1.4rem; }
+.prose-crwn ul { list-style: disc; }
+.prose-crwn ol { list-style: decimal; }
+.prose-crwn li { margin: .35rem 0; }
+.prose-crwn a { color: #7dd3fc; text-decoration: underline; }
+.prose-crwn blockquote { border-left: 3px solid #4f46e5; padding-left: 1rem; color: #aab; font-style: italic; margin: 1.25rem 0; }
+.prose-crwn pre { background: #05060a; border: 1px solid var(--line); padding: 1rem; border-radius: .6rem; overflow-x: auto; font-size: .9rem; margin: 1.25rem 0; }
+.prose-crwn code { background: #05060a; padding: .12rem .35rem; border-radius: .3rem; font-size: .9em; }
+.prose-crwn img { border-radius: .7rem; margin: 1.25rem 0; max-width: 100%; }
+.prose-crwn hr { border-color: var(--line); margin: 2rem 0; }
+
+[contenteditable][data-ph]:empty::before {
+  content: attr(data-ph);
+  color: #565c70;
+}
