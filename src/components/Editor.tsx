@@ -69,13 +69,15 @@ export default function Editor({
 
   return (
     <div className="panel overflow-hidden rounded-2xl">
-      {/* Top bar: Mode Tabs + Toolbar */}
-      <div className="flex flex-wrap items-center gap-1.5 border-b border-white/[0.08] bg-black/40 px-3 py-2.5">
-        <div className="mr-2 flex rounded-lg border border-white/10 bg-black/50 p-0.5">
+      {/* Keep mode controls visible while the formatting tools swipe horizontally on phones. */}
+      <div className="flex items-center justify-between gap-2 border-b border-white/[0.08] bg-black/40 px-3 py-2.5">
+        <div role="tablist" aria-label="Editor mode" className="flex shrink-0 rounded-lg border border-white/10 bg-black/50 p-0.5">
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === 'write'}
             onClick={() => setTab('write')}
-            className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
+            className={`rounded-md px-3 py-2 text-xs font-semibold transition ${
               tab === 'write'
                 ? 'bg-indigo-500 text-white shadow'
                 : 'text-slate-400 hover:text-white'
@@ -85,11 +87,13 @@ export default function Editor({
           </button>
           <button
             type="button"
+            role="tab"
+            aria-selected={tab === 'preview'}
             onClick={() => {
               sync();
               setTab('preview');
             }}
-            className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
+            className={`rounded-md px-3 py-2 text-xs font-semibold transition ${
               tab === 'preview'
                 ? 'bg-indigo-500 text-white shadow'
                 : 'text-slate-400 hover:text-white'
@@ -99,50 +103,55 @@ export default function Editor({
           </button>
         </div>
 
-        {tab === 'write' && (
-          <>
+        <div className="flex shrink-0 items-center gap-1.5 pr-1 font-mono text-[10px] text-slate-400 sm:gap-2 sm:text-[11px]">
+          <span>{words} words</span>
+          <span>·</span>
+          <span>~{readMins} min</span>
+        </div>
+      </div>
+
+      {tab === 'write' && (
+        <div
+          aria-label="Formatting toolbar"
+          className="no-scrollbar touch-pan-x overflow-x-auto overscroll-x-contain border-b border-white/[0.08] md:overflow-visible"
+        >
+          <div className="flex w-max min-w-full flex-nowrap items-center gap-1 px-3 py-2 md:w-full md:flex-wrap">
             {BTNS.map((b) => (
               <button
                 key={b.label}
                 type="button"
                 title={b.title}
                 onClick={() => run(b.cmd, b.arg)}
-                className="min-w-[2.1rem] rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                className="min-h-10 min-w-[2.5rem] shrink-0 rounded-lg px-3 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
               >
                 {b.label}
               </button>
             ))}
-            <span className="mx-1 h-4 w-px bg-white/10" />
+            <span className="mx-1 h-5 w-px shrink-0 bg-white/10" />
             <button
               type="button"
               onClick={() => setUrlPrompt({ type: 'link', value: '' })}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="min-h-10 shrink-0 rounded-lg px-3 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
               🔗 Link
             </button>
             <button
               type="button"
               onClick={() => setUrlPrompt({ type: 'image', value: '' })}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className="min-h-10 shrink-0 rounded-lg px-3 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
             >
               🖼 Image
             </button>
             <button
               type="button"
               onClick={() => run('removeFormat')}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-400 transition hover:bg-white/10 hover:text-white"
+              className="min-h-10 shrink-0 rounded-lg px-3 text-xs font-semibold text-slate-400 transition hover:bg-white/10 hover:text-white"
             >
               Clear
             </button>
-          </>
-        )}
-
-        <div className="ml-auto flex items-center gap-2 pr-1 font-mono text-[11px] text-slate-400">
-          <span>{words} words</span>
-          <span>·</span>
-          <span>~{readMins} min read</span>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Inline URL Popover (replaces native browser prompt) */}
       {urlPrompt && (
@@ -156,7 +165,7 @@ export default function Editor({
             onChange={(e) => setUrlPrompt({ ...urlPrompt, value: e.target.value })}
             placeholder="https://example.com/..."
             autoFocus
-            className="flex-1 rounded-lg border border-white/15 bg-black/50 px-3 py-1 text-xs text-white outline-none focus:border-indigo-400"
+            className="min-h-11 min-w-0 flex-1 rounded-lg border border-white/15 bg-black/50 px-3 py-2 text-base text-white outline-none focus:border-indigo-400 sm:text-sm"
           />
           <button
             type="button"
@@ -189,14 +198,14 @@ export default function Editor({
           sync();
         }}
         data-ph="Tell the full story. What did you discover, how did you verify it, and why does it matter?"
-        className={`prose-crwn min-h-[380px] max-w-none px-6 py-5 outline-none ${
+        className={`prose-crwn min-h-[320px] max-w-none px-4 py-4 outline-none sm:min-h-[380px] sm:px-6 sm:py-5 ${
           tab === 'preview' ? 'hidden' : 'block'
         }`}
       />
 
       {/* Live Preview Surface */}
       {tab === 'preview' && (
-        <div className="min-h-[380px] bg-black/20 px-6 py-5">
+        <div className="min-h-[320px] bg-black/20 px-4 py-4 sm:min-h-[380px] sm:px-6 sm:py-5">
           <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-indigo-400/25 bg-indigo-500/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-indigo-300">
             Article Preview
           </div>

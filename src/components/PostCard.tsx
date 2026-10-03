@@ -62,7 +62,7 @@ export default function PostCard({ post, big = false }: { post: PostRow; big?: b
           </div>
         </div>
 
-        <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+        <div className="flex flex-1 flex-col justify-between p-4 sm:p-5 lg:p-6">
           <div>
             <div className="mb-2 flex items-center gap-2 font-mono text-[11px] text-slate-400">
               <span>{when(post.published_at ?? post.created_at)}</span>
@@ -77,7 +77,7 @@ export default function PostCard({ post, big = false }: { post: PostRow; big?: b
             <h3
               className={`${
                 big
-                  ? 'font-display text-3xl sm:text-4xl tracking-tight leading-[1.12]'
+                  ? 'font-display text-2xl leading-[1.12] tracking-tight sm:text-3xl lg:text-4xl'
                   : 'text-lg sm:text-xl font-bold leading-snug tracking-tight'
               } text-white transition group-hover:text-indigo-300`}
             >

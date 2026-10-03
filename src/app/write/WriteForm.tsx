@@ -25,7 +25,7 @@ function Submit({ isAdmin, isEditing }: { isAdmin: boolean; isEditing: boolean }
   return (
     <button
       disabled={pending}
-      className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400 disabled:opacity-50"
+      className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400 disabled:opacity-50 sm:w-auto"
     >
       {pending
         ? 'Saving…'
@@ -95,7 +95,7 @@ export default function WriteForm({
 
   if (state.ok) {
     return (
-      <div className="panel rounded-3xl p-10 text-center">
+      <div className="panel rounded-3xl p-6 text-center sm:p-10">
         <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl border border-emerald-400/30 bg-emerald-500/15 text-2xl text-emerald-300">
           ✓
         </div>
@@ -103,24 +103,24 @@ export default function WriteForm({
         <p className="mx-auto mt-2 max-w-md text-sm text-slate-400">
           You can track the review status of all your submissions in your Writer Dashboard.
         </p>
-        <div className="mt-7 flex flex-wrap justify-center gap-3">
+        <div className="mt-7 flex w-full flex-col justify-center gap-3 sm:flex-row">
           {state.slug && (
             <Link
               href={`/post/${state.slug}`}
-              className="rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10"
+              className="w-full rounded-full border border-white/15 bg-white/[0.04] px-5 py-2.5 text-center text-sm font-semibold text-white hover:bg-white/10 sm:w-auto"
             >
               Preview article →
             </Link>
           )}
           <Link
             href="/dashboard"
-            className="rounded-full border border-indigo-400/30 bg-indigo-500/15 px-5 py-2.5 text-sm font-semibold text-indigo-200 hover:bg-indigo-500/25"
+            className="w-full rounded-full border border-indigo-400/30 bg-indigo-500/15 px-5 py-2.5 text-center text-sm font-semibold text-indigo-200 hover:bg-indigo-500/25 sm:w-auto"
           >
             Go to Writer Dashboard
           </Link>
           <Link
             href="/write"
-            className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-2.5 text-sm font-semibold text-white"
+            className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-5 py-2.5 text-center text-sm font-semibold text-white sm:w-auto"
           >
             Write another
           </Link>
@@ -145,7 +145,7 @@ export default function WriteForm({
       )}
 
       {state.message && (
-        <p className="rounded-2xl border border-rose-500/40 bg-rose-500/10 px-5 py-3.5 text-sm text-rose-300">
+        <p className="rounded-2xl border border-rose-500/40 bg-rose-500/10 px-4 py-3.5 text-sm text-rose-300 sm:px-5">
           {state.message}
         </p>
       )}
@@ -160,7 +160,7 @@ export default function WriteForm({
           maxLength={160}
           defaultValue={initialPost?.title ?? ''}
           placeholder="What did you discover?"
-          className="panel w-full rounded-2xl px-5 py-4 text-xl font-bold text-white outline-none placeholder:text-slate-600 focus:border-indigo-500 sm:text-2xl"
+          className="panel w-full rounded-2xl px-4 py-4 text-base font-bold text-white outline-none placeholder:text-slate-600 focus:border-indigo-500 sm:px-5 sm:text-sm"
         />
       </div>
 
@@ -173,7 +173,7 @@ export default function WriteForm({
             name="category"
             required
             defaultValue={initialPost?.category_slug ?? ''}
-            className="panel w-full rounded-2xl px-4 py-3.5 text-sm text-white outline-none focus:border-indigo-500"
+            className="panel w-full rounded-2xl px-4 py-3.5 text-base text-white outline-none focus:border-indigo-500 sm:text-sm"
           >
             <option value="" disabled className="bg-[#0d1019]">
               Choose a category…
@@ -208,7 +208,7 @@ export default function WriteForm({
             value={coverUrl}
             onChange={(e) => setCoverUrl(e.target.value)}
             placeholder="https://… (or click Upload file)"
-            className="panel w-full rounded-2xl px-4 py-3.5 text-sm text-white outline-none placeholder:text-slate-600 focus:border-indigo-500"
+            className="panel w-full rounded-2xl px-4 py-3.5 text-base text-white outline-none placeholder:text-slate-600 focus:border-indigo-500 sm:text-sm"
           />
           {uploadErr && <p className="text-xs text-rose-400">{uploadErr}</p>}
         </div>
@@ -221,17 +221,17 @@ export default function WriteForm({
         <Editor name="body_html" initialHtml={initialPost?.body_html ?? ''} />
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+      <div className="flex flex-col items-stretch gap-4 pt-2 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-xs text-slate-400">
           {isAdmin
             ? '⚡ Editor privilege: your post publishes immediately.'
             : '🛡 All HTML is sanitized server-side and queued for editor verification.'}
         </p>
-        <div className="flex items-center gap-3">
+        <div className="flex w-full flex-col-reverse items-stretch gap-3 sm:w-auto sm:flex-row sm:items-center">
           {initialPost && (
             <Link
               href="/dashboard"
-              className="rounded-full border border-white/10 px-5 py-2.5 text-xs font-semibold text-slate-300 hover:bg-white/5"
+              className="w-full rounded-full border border-white/10 px-5 py-2.5 text-center text-xs font-semibold text-slate-300 hover:bg-white/5 sm:w-auto"
             >
               Cancel
             </Link>
