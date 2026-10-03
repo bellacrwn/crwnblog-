@@ -15,7 +15,7 @@
     "next": "14.2.35",
     "react": "^18",
     "react-dom": "^18",
-    "sanitize-html": "^2.17.5"
+    "sanitize-html": "^2.18.0"
   },
   "devDependencies": {
     "@types/node": "^20",

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { catBySlug } from '@/lib/categories';
+import { sanitizeUrl } from '@/lib/sanitize';
 
 export type PostRow = {
   id: string;
@@ -26,36 +27,81 @@ function when(iso: string | null) {
 
 export default function PostCard({ post, big = false }: { post: PostRow; big?: boolean }) {
   const cat = catBySlug(post.category_slug);
+  const safeCover = sanitizeUrl(post.cover_url);
+  const username = post.profiles?.username ?? 'anonymous';
 
   return (
-    <article className="panel group overflow-hidden rounded-2xl transition hover:border-[#343b52]">
-      <Link href={`/post/${post.slug}`}>
+    <article className="panel panel-interactive group relative flex h-full flex-col overflow-hidden rounded-2xl">
+      <Link href={`/post/${post.slug}`} className="flex h-full flex-col">
         <div
-          className={`${big ? 'h-60' : 'h-40'} w-full bg-cover bg-center`}
+          className={`${big ? 'h-64 sm:h-72' : 'h-44'} relative w-full overflow-hidden bg-cover bg-center transition duration-500 group-hover:scale-[1.02]`}
           style={{
-            backgroundImage: post.cover_url
-              ? `url(${post.cover_url})`
-              : `linear-gradient(135deg, ${cat.accent}33, #0e1018 70%)`,
+            backgroundImage: safeCover
+              ? `url("${safeCover}")`
+              : `radial-gradient(circle at 20% 20%, ${cat.accent}35, transparent 60%), linear-gradient(135deg, #111524 0%, #070910 100%)`,
           }}
-        />
-        <div className="p-5">
-          <div className="mb-2 flex items-center gap-2 text-xs">
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0d1019] via-transparent to-transparent opacity-80" />
+          <div className="absolute left-4 top-4 flex items-center gap-2">
             <span
-              className="rounded-full px-2.5 py-1 font-semibold"
-              style={{ background: `${cat.accent}1f`, color: cat.accent }}
+              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold backdrop-blur-md"
+              style={{
+                background: 'rgba(7, 8, 13, 0.72)',
+                borderColor: `${cat.accent}55`,
+                color: cat.accent,
+              }}
             >
+              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cat.accent }} />
               {cat.name}
             </span>
-            <span className="text-slate-500">{when(post.published_at ?? post.created_at)}</span>
+            {big && (
+              <span className="rounded-full border border-indigo-400/30 bg-indigo-500/20 px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider text-indigo-200 backdrop-blur-md">
+                Lead Story
+              </span>
+            )}
           </div>
-          <h3 className={`${big ? 'text-2xl' : 'text-lg'} font-bold leading-snug group-hover:text-indigo-300`}>
-            {post.title}
-          </h3>
-          <p className="mt-2 line-clamp-3 text-sm text-slate-400">{post.excerpt}</p>
-          <p className="mt-3 text-xs text-slate-500">
-            by {post.profiles?.username ?? 'anonymous'}
-            {typeof post.views === 'number' && ` · ${post.views} views`}
-          </p>
+        </div>
+
+        <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
+          <div>
+            <div className="mb-2 flex items-center gap-2 font-mono text-[11px] text-slate-400">
+              <span>{when(post.published_at ?? post.created_at)}</span>
+              {typeof post.views === 'number' && (
+                <>
+                  <span>·</span>
+                  <span>{post.views.toLocaleString()} views</span>
+                </>
+              )}
+            </div>
+
+            <h3
+              className={`${
+                big
+                  ? 'font-display text-3xl sm:text-4xl tracking-tight leading-[1.12]'
+                  : 'text-lg sm:text-xl font-bold leading-snug tracking-tight'
+              } text-white transition group-hover:text-indigo-300`}
+            >
+              {post.title}
+            </h3>
+
+            {post.excerpt && (
+              <p className="mt-2.5 line-clamp-3 text-sm leading-relaxed text-slate-400">
+                {post.excerpt}
+              </p>
+            )}
+          </div>
+
+          <div className="mt-5 flex items-center justify-between border-t border-white/[0.06] pt-3.5 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="grid h-5 w-5 place-items-center rounded-full bg-white/10 font-mono text-[10px] font-bold uppercase text-slate-200">
+                {username.slice(0, 1)}
+              </span>
+              <span className="font-medium text-slate-300">@{username}</span>
+            </div>
+            <span className="font-mono text-[11px] text-indigo-400 transition group-hover:translate-x-0.5">
+              Read →
+            </span>
+          </div>
         </div>
       </Link>
     </article>

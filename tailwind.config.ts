@@ -8,9 +8,14 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-geist-sans)", "Plus Jakarta Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-geist-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
+        display: ["Instrument Serif", "Georgia", "Cambria", "Times New Roman", "serif"],
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        background: "var(--bg)",
+        foreground: "var(--fg)",
       },
     },
   },
