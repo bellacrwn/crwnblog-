@@ -65,7 +65,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
       {post.status === 'published' && <ViewTracker slug={post.slug} />}
 
       {post.status !== 'published' && (
-        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-400/35 bg-amber-500/10 px-5 py-4 text-sm text-amber-200">
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-amber-400/35 bg-amber-500/10 px-4 py-4 text-sm text-amber-200 sm:px-5">
           <div>
             <p className="font-semibold">
               Status:{' '}
@@ -81,7 +81,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           {canEdit && (
             <Link
               href={`/write?edit=${post.id}`}
-              className="rounded-full bg-amber-400 px-4 py-1.5 text-xs font-bold text-black hover:bg-amber-300"
+              className="w-full rounded-full bg-amber-400 px-4 py-2 text-center text-xs font-bold text-black hover:bg-amber-300 sm:w-auto"
             >
               ✎ Edit &amp; Resubmit
             </Link>
@@ -103,14 +103,14 @@ export default async function PostPage({ params }: { params: { slug: string } })
           {canEdit && post.status === 'published' && (
             <Link
               href={`/write?edit=${post.id}`}
-              className="rounded-full border border-white/15 px-3.5 py-1 text-xs font-semibold text-slate-300 hover:bg-white/5"
+              className="w-full rounded-full border border-white/15 px-3.5 py-2 text-center text-xs font-semibold text-slate-300 hover:bg-white/5 sm:w-auto"
             >
               ✎ Edit Article
             </Link>
           )}
         </div>
 
-        <h1 className="font-display text-4xl leading-[1.08] tracking-tight text-white sm:text-6xl">
+        <h1 className="break-words font-display text-3xl leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
           {post.title}
         </h1>
 
@@ -143,7 +143,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
           alt={post.title}
           loading="lazy"
           referrerPolicy="no-referrer"
-          className="mt-8 w-full rounded-3xl border border-white/[0.08] shadow-2xl"
+          className="mt-8 w-full rounded-2xl border border-white/[0.08] shadow-2xl sm:rounded-3xl"
         />
       )}
 
@@ -153,7 +153,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
       />
 
       {author?.bio && (
-        <div className="panel mt-12 rounded-2xl p-6">
+        <div className="panel mt-10 rounded-2xl p-4 sm:mt-12 sm:p-6">
           <p className="font-mono text-[10px] uppercase tracking-widest text-slate-400">
             Written By
           </p>
@@ -162,17 +162,17 @@ export default async function PostPage({ params }: { params: { slug: string } })
         </div>
       )}
 
-      <hr className="my-14 border-white/[0.08]" />
+      <hr className="my-10 border-white/[0.08] sm:my-14" />
 
       <section>
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-3xl text-white">
+          <h2 className="font-display text-2xl text-white sm:text-3xl">
             Discussion ({comments?.length ?? 0})
           </h2>
         </div>
 
         {post.status !== 'published' ? (
-          <p className="mt-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 text-sm text-slate-400">
+          <p className="mt-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 text-sm text-slate-400 sm:p-5">
             Comments unlock once this dispatch is approved and published.
           </p>
         ) : user ? (
@@ -185,20 +185,20 @@ export default async function PostPage({ params }: { params: { slug: string } })
               rows={3}
               maxLength={2000}
               placeholder="Add your perspective or technical notes…"
-              className="panel w-full rounded-2xl px-4 py-3.5 text-sm text-white outline-none placeholder:text-slate-600 focus:border-indigo-500"
+              className="panel w-full rounded-2xl px-4 py-3.5 text-base text-white outline-none placeholder:text-slate-600 focus:border-indigo-500 sm:text-sm"
             />
             <div className="flex justify-end">
-              <button className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-400 hover:to-violet-400">
+              <button className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-3 text-xs font-semibold text-white shadow-md shadow-indigo-500/20 hover:from-indigo-400 hover:to-violet-400 sm:w-auto">
                 Post comment
               </button>
             </div>
           </form>
         ) : (
-          <div className="panel mt-5 flex items-center justify-between rounded-2xl p-5 text-sm">
+          <div className="panel mt-5 flex flex-col items-stretch justify-between gap-4 rounded-2xl p-4 text-sm sm:flex-row sm:items-center sm:p-5">
             <span className="text-slate-400">Sign in to join the community discussion.</span>
             <Link
               href="/login"
-              className="rounded-full bg-indigo-500 px-4 py-1.5 text-xs font-semibold text-white hover:bg-indigo-400"
+              className="w-full rounded-full bg-indigo-500 px-4 py-2 text-center text-xs font-semibold text-white hover:bg-indigo-400 sm:w-auto"
             >
               Sign in
             </Link>
@@ -211,7 +211,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
             const canDelete =
               user && (c.author_id === user.id || profile?.role === 'admin');
             return (
-              <div key={c.id} className="panel rounded-2xl p-5">
+              <div key={c.id} className="panel rounded-2xl p-4 sm:p-5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="grid h-5 w-5 place-items-center rounded-full bg-white/10 font-mono text-[10px] font-bold uppercase text-slate-200">
@@ -236,7 +236,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                     </form>
                   )}
                 </div>
-                <p className="mt-2.5 whitespace-pre-wrap text-sm leading-relaxed text-slate-300">
+                <p className="mt-2.5 break-words whitespace-pre-wrap text-sm leading-relaxed text-slate-300">
                   {c.body}
                 </p>
               </div>

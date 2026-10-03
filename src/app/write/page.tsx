@@ -18,7 +18,7 @@ export default async function WritePage({
 
   if (!user) {
     return (
-      <div className="panel mx-auto max-w-md rounded-3xl p-10 text-center">
+      <div className="panel mx-auto max-w-md rounded-3xl p-6 text-center sm:p-10">
         <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-indigo-400/30 bg-indigo-500/10 font-mono text-lg text-indigo-300">
           ✎
         </span>
@@ -29,7 +29,7 @@ export default async function WritePage({
         </p>
         <Link
           href="/login"
-          className="mt-6 inline-block rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25"
+          className="mt-6 inline-flex w-full justify-center rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-7 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 sm:w-auto"
         >
           Sign in / Create account
         </Link>
@@ -69,7 +69,7 @@ export default async function WritePage({
           <span className="font-mono text-xs font-semibold uppercase tracking-widest text-indigo-400">
             {initialPost ? 'Edit Submission' : 'Contributor Desk'}
           </span>
-          <h1 className="mt-1 font-display text-4xl text-white sm:text-5xl">
+          <h1 className="mt-1 break-words font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             {initialPost ? 'Revise your discovery' : 'Submit a new discovery'}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
@@ -79,7 +79,7 @@ export default async function WritePage({
 
         <Link
           href="/dashboard"
-          className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-xs font-semibold text-slate-300 transition hover:bg-white/[0.08]"
+          className="w-full rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-center text-xs font-semibold text-slate-300 transition hover:bg-white/[0.08] sm:w-auto"
         >
           View My Submissions →
         </Link>

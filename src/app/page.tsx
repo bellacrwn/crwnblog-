@@ -49,7 +49,7 @@ export default async function Home({
       <Hero query={query} />
 
       {query && (
-        <div className="flex items-center justify-between rounded-xl border border-indigo-500/25 bg-indigo-500/10 px-4 py-3 text-sm">
+        <div className="flex min-w-0 flex-col items-start gap-2 rounded-xl border border-indigo-500/25 bg-indigo-500/10 px-4 py-3 text-sm sm:flex-row sm:items-center sm:justify-between">
           <p className="text-slate-200">
             Showing results for <span className="font-semibold text-white">&ldquo;{query}&rdquo;</span> ({posts.length})
           </p>
@@ -60,7 +60,7 @@ export default async function Home({
       )}
 
       {posts.length === 0 ? (
-        <div className="panel rounded-3xl p-12 text-center">
+        <div className="panel rounded-3xl p-6 text-center sm:p-12">
           <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-indigo-400/30 bg-indigo-500/10 font-mono text-lg text-indigo-300">
             ✦
           </span>
@@ -72,18 +72,18 @@ export default async function Home({
               ? 'Try another search term or browse all categories below.'
               : 'The newsroom feed is live — it populates the moment the first community dispatch is approved by an editor.'}
           </p>
-          <div className="mt-6 flex justify-center gap-3">
+          <div className="mt-6 flex w-full flex-col justify-center gap-3 sm:flex-row">
             {query && (
               <Link
                 href="/"
-                className="rounded-full border border-white/15 px-5 py-2.5 text-sm font-semibold text-slate-200 hover:bg-white/5"
+                className="w-full rounded-full border border-white/15 px-5 py-2.5 text-center text-sm font-semibold text-slate-200 hover:bg-white/5 sm:w-auto"
               >
                 Reset search
               </Link>
             )}
             <Link
               href="/write"
-              className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-400 hover:to-violet-400"
+              className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-400 hover:to-violet-400 sm:w-auto"
             >
               Submit a discovery →
             </Link>
@@ -91,11 +91,11 @@ export default async function Home({
         </div>
       ) : (
         <>
-          <div className="grid gap-6 lg:grid-cols-3">
+          <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
               <PostCard post={lead} big />
             </div>
-            <div className="grid gap-6">
+            <div className="grid gap-4 sm:gap-6">
               {rest.slice(0, 2).map((p) => (
                 <PostCard key={p.id} post={p} />
               ))}
@@ -110,7 +110,7 @@ export default async function Home({
                 </h2>
                 <div className="h-px flex-1 bg-white/[0.07]" />
               </div>
-              <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {rest.slice(2).map((p) => (
                   <PostCard key={p.id} post={p} />
                 ))}
@@ -127,7 +127,7 @@ export default async function Home({
 
 function Hero({ query }: { query: string }) {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0e1222]/90 via-[#090b13]/90 to-[#0d101b]/90 p-7 sm:p-11">
+    <section className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-gradient-to-br from-[#0e1222]/90 via-[#090b13]/90 to-[#0d101b]/90 p-5 sm:p-11">
       <div className="pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-indigo-500/15 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-24 left-1/3 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
 
@@ -138,7 +138,7 @@ function Hero({ query }: { query: string }) {
             <span>COMMUNITY-WRITTEN · EDITOR-VERIFIED</span>
           </div>
 
-          <h1 className="text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-6xl">
+          <h1 className="break-words text-3xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl">
             Frontline dispatches in{' '}
             <span className="font-display italic font-normal bg-gradient-to-r from-cyan-300 via-indigo-300 to-rose-300 bg-clip-text text-transparent">
               cyber, tech &amp; culture.
@@ -158,11 +158,11 @@ function Hero({ query }: { query: string }) {
               name="q"
               defaultValue={query}
               placeholder="Search discoveries, CVEs, tools…"
-              className="w-full bg-transparent text-sm text-white outline-none placeholder:text-slate-500"
+              className="min-w-0 w-full bg-transparent text-base text-white outline-none placeholder:text-slate-500 sm:text-sm"
             />
             <button
               type="submit"
-              className="shrink-0 rounded-full bg-white/10 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-indigo-500"
+              className="min-h-10 shrink-0 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-500"
             >
               Search
             </button>
@@ -187,7 +187,7 @@ function CategoryShowcase() {
           <Link
             key={c.slug}
             href={`/category/${c.slug}`}
-            className="panel panel-interactive group rounded-2xl p-5"
+            className="panel panel-interactive group rounded-2xl p-4 sm:p-5"
           >
             <div className="flex items-center justify-between">
               <span
