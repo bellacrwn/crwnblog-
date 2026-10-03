@@ -23,7 +23,12 @@ Fill in from **Project Settings → API**:
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
+
+# Optional — override the default Google AdSense publisher ID
+NEXT_PUBLIC_ADSENSE_CLIENT=ca-pub-6225354761283486
 ```
+
+The AdSense script is added site-wide using publisher ID `ca-pub-6225354761283486` by default. Override it with `NEXT_PUBLIC_ADSENSE_CLIENT` if needed. The site must be approved in AdSense and Auto ads enabled before Google serves ads. Since `NEXT_PUBLIC_*` values are baked in at build time, redeploy after changing the ID.
 
 ### 4. Run it
 ```bash
@@ -44,7 +49,7 @@ Now `/admin` (the moderation queue) unlocks.
 ## Deploy to Vercel
 1. Push to GitHub.
 2. Vercel → **Import Project** → pick the repo (it auto-detects Next.js).
-3. Add the two `NEXT_PUBLIC_*` env vars in **Settings → Environment Variables**.
+3. Add the two Supabase `NEXT_PUBLIC_*` env vars in **Settings → Environment Variables**. The AdSense publisher ID is already configured by default; set `NEXT_PUBLIC_ADSENSE_CLIENT` only if you need to override it.
 4. Deploy. Add your domain under **Settings → Domains**.
 
 No extra config needed — no `vercel.json`, no custom runtime.

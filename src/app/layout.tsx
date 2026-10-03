@@ -3,7 +3,14 @@ import localFont from 'next/font/local';
 import './globals.css';
 import Nav from '@/components/Nav';
 import Link from 'next/link';
+import Script from 'next/script';
 import { CATEGORIES } from '@/lib/categories';
+
+const adsenseClient =
+  process.env.NEXT_PUBLIC_ADSENSE_CLIENT?.trim() || 'ca-pub-6225354761283486';
+const adsenseScriptSrc = /^ca-pub-\d+$/.test(adsenseClient)
+  ? `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`
+  : null;
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
