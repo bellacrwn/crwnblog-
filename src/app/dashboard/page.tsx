@@ -13,14 +13,14 @@ export default async function DashboardPage() {
   const { user, profile } = await getSession();
   if (!user || !profile) {
     return (
-      <div className="panel mx-auto max-w-md rounded-3xl p-10 text-center">
+      <div className="panel mx-auto max-w-md rounded-3xl p-6 text-center sm:p-10">
         <h1 className="font-display text-3xl text-white">Sign in to view your dashboard</h1>
         <p className="mt-2 text-sm text-slate-400">
           Track your pending submissions, read editor feedback, and manage published articles.
         </p>
         <Link
           href="/login"
-          className="mt-6 inline-block rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white"
+          className="mt-6 inline-flex w-full justify-center rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white sm:w-auto"
         >
           Sign in
         </Link>
@@ -50,7 +50,7 @@ export default async function DashboardPage() {
           <span className="font-mono text-xs font-semibold uppercase tracking-widest text-indigo-400">
             Contributor Workspace
           </span>
-          <h1 className="mt-1 font-display text-4xl text-white sm:text-5xl">
+          <h1 className="mt-1 break-words font-display text-3xl text-white sm:text-4xl lg:text-5xl">
             @{profile.username}
           </h1>
           <p className="mt-1 text-sm text-slate-400">
@@ -63,7 +63,7 @@ export default async function DashboardPage() {
 
         <Link
           href="/write"
-          className="rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400"
+          className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400 sm:w-auto"
         >
           + New Discovery
         </Link>
@@ -71,27 +71,27 @@ export default async function DashboardPage() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <div className="panel rounded-2xl p-5">
+        <div className="panel rounded-2xl p-4 sm:p-5">
           <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Published</p>
-          <p className="mt-2 font-display text-4xl text-emerald-400">{publishedCount}</p>
+          <p className="mt-2 font-display text-3xl text-emerald-400 sm:text-4xl">{publishedCount}</p>
         </div>
-        <div className="panel rounded-2xl p-5">
+        <div className="panel rounded-2xl p-4 sm:p-5">
           <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400">
             In Review
           </p>
-          <p className="mt-2 font-display text-4xl text-amber-300">{pendingCount}</p>
+          <p className="mt-2 font-display text-3xl text-amber-300 sm:text-4xl">{pendingCount}</p>
         </div>
-        <div className="panel rounded-2xl p-5">
+        <div className="panel rounded-2xl p-4 sm:p-5">
           <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400">
             Needs Changes
           </p>
-          <p className="mt-2 font-display text-4xl text-rose-400">{rejectedCount}</p>
+          <p className="mt-2 font-display text-3xl text-rose-400 sm:text-4xl">{rejectedCount}</p>
         </div>
-        <div className="panel rounded-2xl p-5">
+        <div className="panel rounded-2xl p-4 sm:p-5">
           <p className="font-mono text-[11px] uppercase tracking-wider text-slate-400">
             Total Views
           </p>
-          <p className="mt-2 font-display text-4xl text-indigo-300">
+          <p className="mt-2 font-display text-3xl text-indigo-300 sm:text-4xl">
             {totalViews.toLocaleString()}
           </p>
         </div>
@@ -107,14 +107,14 @@ export default async function DashboardPage() {
         </div>
 
         {allPosts.length === 0 ? (
-          <div className="panel rounded-3xl p-12 text-center">
-            <p className="font-display text-3xl text-white">You haven&apos;t submitted a discovery yet.</p>
+          <div className="panel rounded-3xl p-6 text-center sm:p-12">
+            <p className="font-display text-2xl text-white sm:text-3xl">You haven&apos;t submitted a discovery yet.</p>
             <p className="mt-2 text-sm text-slate-400">
               Share your first cyber, tech, or culture story with the community.
             </p>
             <Link
               href="/write"
-              className="mt-6 inline-block rounded-full bg-indigo-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400"
+              className="mt-6 inline-flex w-full justify-center rounded-full bg-indigo-500 px-6 py-2.5 text-sm font-semibold text-white hover:bg-indigo-400 sm:w-auto"
             >
               Write your first post →
             </Link>
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
             const canEdit = p.status !== 'published' || profile.role === 'admin';
 
             return (
-              <div key={p.id} className="panel rounded-2xl p-6">
+              <div key={p.id} className="panel rounded-2xl p-4 sm:p-6">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div className="flex flex-wrap items-center gap-2 text-xs">
                     <span
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                   )}
                 </div>
 
-                <h3 className="mt-3 text-xl font-bold text-white">
+                <h3 className="mt-3 break-words text-lg font-bold text-white sm:text-xl">
                   <Link href={`/post/${p.slug}`} className="hover:text-indigo-300">
                     {p.title}
                   </Link>
@@ -184,10 +184,10 @@ export default async function DashboardPage() {
                   </div>
                 )}
 
-                <div className="mt-5 flex flex-wrap items-center gap-2.5 border-t border-white/[0.06] pt-4">
+                <div className="mt-5 flex flex-col items-stretch gap-2.5 border-t border-white/[0.06] pt-4 sm:flex-row sm:flex-wrap sm:items-center">
                   <Link
                     href={`/post/${p.slug}`}
-                    className="rounded-full border border-white/10 bg-white/[0.03] px-4 py-1.5 text-xs font-semibold text-slate-200 transition hover:bg-white/10"
+                    className="w-full rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 text-center text-xs font-semibold text-slate-200 transition hover:bg-white/10 sm:w-auto"
                   >
                     {p.status === 'published' ? 'View live article' : 'Preview'}
                   </Link>
@@ -195,15 +195,15 @@ export default async function DashboardPage() {
                   {canEdit && (
                     <Link
                       href={`/write?edit=${p.id}`}
-                      className="rounded-full border border-indigo-400/35 bg-indigo-500/15 px-4 py-1.5 text-xs font-semibold text-indigo-200 transition hover:bg-indigo-500/25"
+                      className="w-full rounded-full border border-indigo-400/35 bg-indigo-500/15 px-4 py-2 text-center text-xs font-semibold text-indigo-200 transition hover:bg-indigo-500/25 sm:w-auto"
                     >
                       {p.status === 'rejected' ? '✎ Edit & Resubmit' : '✎ Edit'}
                     </Link>
                   )}
 
-                  <form action={deleteOwnPost} className="ml-auto">
+                  <form action={deleteOwnPost} className="w-full sm:ml-auto sm:w-auto">
                     <input type="hidden" name="id" value={p.id} />
-                    <button className="rounded-full px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:bg-rose-500/10 hover:text-rose-300">
+                    <button className="w-full rounded-full px-3 py-2 text-center text-xs font-medium text-slate-500 transition hover:bg-rose-500/10 hover:text-rose-300 sm:w-auto">
                       Delete
                     </button>
                   </form>

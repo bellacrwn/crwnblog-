@@ -40,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="flex min-h-screen flex-col antialiased selection:bg-indigo-500/30">
         <Nav />
-        <main className="mx-auto w-full max-w-6xl flex-1 px-5 py-10">{children}</main>
+        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-7 sm:px-5 sm:py-10">{children}</main>
         <footer className="mt-24 border-t border-white/[0.07] bg-[#040508]/80 backdrop-blur-md">
           <div className="mx-auto max-w-6xl px-5 py-12">
             <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">

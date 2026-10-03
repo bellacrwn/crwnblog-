@@ -47,8 +47,8 @@ export default async function CategoryPage({ params }: { params: { slug: string 
       <CategoryHeader cat={cat} count={posts.length} />
 
       {posts.length === 0 ? (
-        <div className="panel rounded-3xl p-12 text-center">
-          <p className="font-display text-3xl text-white">
+        <div className="panel rounded-3xl p-6 text-center sm:p-12">
+          <p className="font-display text-2xl text-white sm:text-3xl">
             Nothing published in {cat.name} yet.
           </p>
           <p className="mt-2 text-sm text-slate-400">
@@ -56,13 +56,13 @@ export default async function CategoryPage({ params }: { params: { slug: string 
           </p>
           <Link
             href="/write"
-            className="mt-6 inline-block rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white"
+            className="mt-6 inline-flex w-full justify-center rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-6 py-2.5 text-sm font-semibold text-white sm:w-auto"
           >
             Submit to {cat.name} →
           </Link>
         </div>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {posts.map((p) => (
             <PostCard key={p.id} post={p} />
           ))}
@@ -80,7 +80,7 @@ function CategoryHeader({
   count: number;
 }) {
   return (
-    <header className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0c0f1a]/90 p-8 sm:p-10">
+    <header className="relative overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0c0f1a]/90 p-5 sm:p-8 lg:p-10">
       <div
         className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full blur-3xl"
         style={{ backgroundColor: `${cat.accent}22` }}
@@ -94,7 +94,7 @@ function CategoryHeader({
             <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: cat.accent }} />
             Editorial Desk
           </span>
-          <h1 className="mt-3 font-display text-4xl text-white sm:text-6xl">{cat.name}</h1>
+          <h1 className="mt-3 break-words font-display text-3xl text-white sm:text-5xl lg:text-6xl">{cat.name}</h1>
           <p className="mt-2 max-w-xl text-base text-slate-400">{cat.blurb}</p>
         </div>
 

@@ -64,7 +64,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="panel mx-auto max-w-md rounded-3xl p-8 sm:p-10">
+    <div className="panel mx-auto max-w-md rounded-3xl p-6 sm:p-10">
       <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-indigo-400">
         {mode === 'in' ? 'Contributor Access' : 'New Contributor'}
       </span>
@@ -92,7 +92,7 @@ export default function LoginPage() {
               pattern="^[a-zA-Z0-9_-]{3,24}$"
               title="3–24 characters: letters, numbers, underscores, or hyphens"
               placeholder="e.g. cyber_researcher"
-              className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+              className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-base text-white outline-none focus:border-indigo-500 sm:text-sm"
             />
           </div>
         )}
@@ -107,7 +107,7 @@ export default function LoginPage() {
             required
             autoComplete="email"
             placeholder="you@domain.com"
-            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-base text-white outline-none focus:border-indigo-500 sm:text-sm"
           />
         </div>
         <div>
@@ -122,7 +122,7 @@ export default function LoginPage() {
             minLength={mode === 'up' ? 8 : 6}
             autoComplete={mode === 'up' ? 'new-password' : 'current-password'}
             placeholder={mode === 'up' ? 'At least 8 characters' : '••••••••'}
-            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-base text-white outline-none focus:border-indigo-500 sm:text-sm"
           />
         </div>
         <button
