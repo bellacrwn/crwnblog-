@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { CATEGORIES, deskVar } from '@/lib/categories';
 import { createClient, getSession, isConfigured } from '@/lib/supabase/server';
 import { signOut } from '@/lib/actions';
+import MobileMenu from '@/components/MobileMenu';
 
 /**
  * Contributor shell bar — deep walnut. Deliberately plainer than the public
@@ -42,7 +43,7 @@ export default async function Nav() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-4 md:flex">
+        <nav className="hidden items-center gap-4 lg:flex">
           <Link
             href="/"
             className="font-mono text-[10px] font-bold uppercase tracking-kicker text-muted transition hover:text-fg"
@@ -61,7 +62,7 @@ export default async function Nav() {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto hidden items-center gap-2 lg:flex">
           {profile?.role === 'admin' && (
             <Link
               href="/admin"
@@ -111,26 +112,15 @@ export default async function Nav() {
             </Link>
           )}
         </div>
-      </div>
 
-      {/* Mobile section strip */}
-      <div className="flex items-center gap-3 overflow-x-auto border-t border-rule px-5 py-1.5 md:hidden">
-        <Link
-          href="/"
-          className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-kicker text-muted"
-        >
-          Front Page
-        </Link>
-        {CATEGORIES.map((c) => (
-          <Link
-            key={c.slug}
-            href={`/category/${c.slug}`}
-            className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-kicker"
-            style={{ color: deskVar(c.slug) }}
-          >
-            {c.short}
-          </Link>
-        ))}
+        <MobileMenu
+          theme="walnut"
+          isSignedIn={Boolean(user)}
+          username={profile?.username ?? null}
+          isAdmin={profile?.role === 'admin'}
+          pendingCount={pendingCount}
+          revisionCount={rejectedCount}
+        />
       </div>
     </header>
   );

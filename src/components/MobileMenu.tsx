@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { signOut } from '@/lib/actions';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, deskVar } from '@/lib/categories';
 
 type MobileMenuProps = {
   isSignedIn: boolean;
@@ -13,6 +13,12 @@ type MobileMenuProps = {
   isAdmin: boolean;
   pendingCount: number;
   revisionCount: number;
+  /**
+   * The drawer portals into document.body, i.e. OUTSIDE the .theme-newsprint /
+   * .theme-walnut shell wrapper, so it would not inherit the design tokens.
+   * The matching theme class is applied to the portal root instead.
+   */
+  theme: 'newsprint' | 'walnut';
 };
 
 export default function MobileMenu({
@@ -21,6 +27,7 @@ export default function MobileMenu({
   isAdmin,
   pendingCount,
   revisionCount,
+  theme,
 }: MobileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
@@ -82,6 +89,9 @@ export default function MobileMenu({
     setIsOpen(false);
   }
 
+  const triggerClass =
+    'ml-auto grid h-11 w-11 shrink-0 place-items-center border border-rule-mid bg-panel text-ink transition hover:bg-accent-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:hidden';
+
   return (
     <>
       <button
@@ -91,7 +101,7 @@ export default function MobileMenu({
         aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
         aria-expanded={isOpen}
         aria-controls="mobile-navigation"
-        className="ml-auto grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-200 transition hover:border-white/20 hover:bg-white/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400 lg:hidden"
+        className={triggerClass}
       >
         {isOpen ? (
           <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
@@ -106,13 +116,14 @@ export default function MobileMenu({
 
       {isOpen &&
         createPortal(
-          <div className="fixed inset-0 z-[60] lg:hidden">
+          <div className={`theme-${theme} fixed inset-0 z-[60] lg:hidden`}>
             <button
               type="button"
               tabIndex={-1}
               aria-label="Close navigation menu"
               onClick={closeMenu}
-              className="absolute inset-0 cursor-default bg-black/70 backdrop-blur-sm"
+              className="absolute inset-0 cursor-default"
+              style={{ background: 'var(--scrim)' }}
             />
 
             <aside
@@ -122,20 +133,20 @@ export default function MobileMenu({
               aria-modal="true"
               aria-label="Mobile navigation"
               tabIndex={-1}
-              className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-white/10 bg-[#080a12] shadow-2xl shadow-black/50 outline-none"
+              className="absolute inset-y-0 right-0 flex w-full max-w-sm flex-col border-l border-rule bg-bg shadow-2xl outline-none"
             >
-              <div className="flex items-center justify-between border-b border-white/[0.08] px-5 py-4">
+              <div className="flex items-center justify-between border-b border-rule px-5 py-4">
                 <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-indigo-300">
-                    crwnblog
+                  <p className="font-masthead text-xl leading-none text-ink">crwnblog</p>
+                  <p className="mt-1 font-mono text-[10px] font-bold uppercase tracking-kicker text-muted">
+                    Navigation
                   </p>
-                  <p className="mt-0.5 text-sm font-semibold text-white">Navigation</p>
                 </div>
                 <button
                   type="button"
                   onClick={closeMenu}
                   aria-label="Close navigation menu"
-                  className="grid h-11 w-11 place-items-center rounded-xl border border-white/10 bg-white/[0.04] text-slate-300 transition hover:bg-white/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-400"
+                  className="grid h-11 w-11 place-items-center border border-rule-mid bg-panel text-ink transition hover:bg-accent-soft focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
                 >
                   <svg aria-hidden="true" viewBox="0 0 24 24" className="h-5 w-5" fill="none">
                     <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -143,88 +154,99 @@ export default function MobileMenu({
                 </button>
               </div>
 
-              <div className="no-scrollbar flex-1 overflow-y-auto overscroll-contain px-5 py-5">
+              <div className="flex-1 overflow-y-auto overscroll-contain px-5 py-5">
                 <form
                   action="/"
                   method="get"
                   onSubmit={closeMenu}
-                  className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/40 p-1.5 pl-3 focus-within:border-indigo-400/60"
+                  className="flex items-center gap-2 border border-rule-mid bg-panel-inset p-1.5 pl-3 focus-within:border-accent"
                 >
                   <label htmlFor="mobile-search" className="sr-only">
-                    Search dispatches
+                    Search the archive
                   </label>
                   <input
                     id="mobile-search"
                     type="search"
                     name="q"
-                    placeholder="Search dispatches…"
+                    placeholder="Search the archive…"
                     autoComplete="off"
-                    className="min-w-0 flex-1 bg-transparent px-1 py-2 text-base text-white outline-none placeholder:text-slate-500 sm:text-sm"
+                    className="min-w-0 flex-1 bg-transparent px-1 py-2 font-serif text-base text-ink outline-none placeholder:text-faint sm:text-sm"
                   />
                   <button
                     type="submit"
-                    className="min-h-10 shrink-0 rounded-xl bg-indigo-500 px-3.5 text-xs font-semibold text-white transition hover:bg-indigo-400"
+                    className="btn btn-primary min-h-10 shrink-0 px-3.5 font-mono text-[10px] uppercase tracking-kicker"
                   >
                     Search
                   </button>
                 </form>
 
-                <nav aria-label="Editorial desks" className="mt-7">
-                  <p className="mb-2 px-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
-                    Editorial Desks
+                <nav aria-label="Sections" className="mt-7">
+                  <p className="mb-2 px-1 font-mono text-[10px] font-bold uppercase tracking-kicker text-faint">
+                    Sections
                   </p>
                   <div className="space-y-1">
                     <Link
                       href="/"
                       onClick={closeMenu}
-                      className="flex min-h-12 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-white/[0.06] hover:text-white"
+                      className="flex min-h-12 items-center gap-3 px-3 py-2.5 transition hover:bg-accent-soft"
                     >
-                      <span className="h-2 w-2 shrink-0 rounded-full bg-indigo-300" />
-                      All Feed
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-accent" />
+                      <span className="font-display text-base font-bold text-ink">Front Page</span>
                     </Link>
                     {CATEGORIES.map((category) => (
                       <Link
                         key={category.slug}
                         href={`/category/${category.slug}`}
                         onClick={closeMenu}
-                        className="flex min-h-14 items-center gap-3 rounded-xl px-3 py-2.5 transition hover:bg-white/[0.06]"
+                        className="flex min-h-14 items-center gap-3 px-3 py-2.5 transition hover:bg-accent-soft"
                       >
                         <span
                           className="h-2 w-2 shrink-0 rounded-full"
-                          style={{ backgroundColor: category.accent }}
+                          style={{ backgroundColor: deskVar(category.slug) }}
                         />
                         <span className="min-w-0 flex-1">
-                          <span className="block text-sm font-semibold text-slate-200">
+                          <span className="block font-display text-base font-bold text-ink">
                             {category.name}
                           </span>
-                          <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">
+                          <span className="mt-0.5 block font-serif text-xs leading-relaxed text-muted">
                             {category.blurb}
                           </span>
                         </span>
-                        <svg aria-hidden="true" viewBox="0 0 20 20" className="h-4 w-4 shrink-0 text-slate-600" fill="none">
-                          <path d="m7 4 6 6-6 6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                        <svg
+                          aria-hidden="true"
+                          viewBox="0 0 20 20"
+                          className="h-4 w-4 shrink-0 text-faint"
+                          fill="none"
+                        >
+                          <path
+                            d="m7 4 6 6-6 6"
+                            stroke="currentColor"
+                            strokeWidth="1.6"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
                         </svg>
                       </Link>
                     ))}
                   </div>
                 </nav>
 
-                <nav aria-label="Account links" className="mt-7 border-t border-white/[0.08] pt-5">
-                  <p className="mb-2 px-1 font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">
-                    Your Workspace
+                <nav aria-label="Account links" className="mt-7 border-t border-rule pt-5">
+                  <p className="mb-2 px-1 font-mono text-[10px] font-bold uppercase tracking-kicker text-faint">
+                    Your workspace
                   </p>
                   {isSignedIn ? (
                     <div className="space-y-1">
                       <Link
                         href="/dashboard"
                         onClick={closeMenu}
-                        className="flex min-h-12 items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-white/[0.06] hover:text-white"
+                        className="flex min-h-12 items-center justify-between gap-3 px-3 py-2.5 font-display text-base font-bold text-ink transition hover:bg-accent-soft"
                       >
                         <span>My Posts</span>
                         {revisionCount > 0 && (
                           <span
                             title={`${revisionCount} post${revisionCount === 1 ? '' : 's'} needing revision`}
-                            className="rounded-full border border-rose-400/30 bg-rose-500/15 px-2.5 py-1 font-mono text-[10px] font-bold text-rose-200"
+                            className="chip text-bad"
                           >
                             {revisionCount} {revisionCount === 1 ? 'revision' : 'revisions'}
                           </span>
@@ -235,11 +257,17 @@ export default function MobileMenu({
                         <Link
                           href="/admin"
                           onClick={closeMenu}
-                          className="flex min-h-12 items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-200 transition hover:bg-white/[0.06] hover:text-white"
+                          className="flex min-h-12 items-center justify-between gap-3 px-3 py-2.5 font-display text-base font-bold text-ink transition hover:bg-accent-soft"
                         >
                           <span>Moderation Queue</span>
                           {pendingCount > 0 && (
-                            <span className="min-w-6 rounded-full bg-amber-400 px-2 py-1 text-center font-mono text-[10px] font-bold text-black">
+                            <span
+                              className="min-w-6 px-2 py-1 text-center font-mono text-[10px] font-bold"
+                              style={{
+                                backgroundColor: 'var(--brass)',
+                                color: 'var(--on-accent)',
+                              }}
+                            >
                               {pendingCount > 99 ? '99+' : pendingCount}
                             </span>
                           )}
@@ -249,15 +277,15 @@ export default function MobileMenu({
                       <Link
                         href="/write"
                         onClick={closeMenu}
-                        className="mt-3 flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-400 hover:to-violet-400"
+                        className="btn btn-primary mt-3 min-h-12 w-full px-4 py-3 font-mono text-[10px] uppercase tracking-kicker"
                       >
-                        + Write a dispatch
+                        + File a dispatch
                       </Link>
 
                       <form action={signOut} onSubmit={closeMenu} className="mt-3">
                         <button
                           type="submit"
-                          className="flex min-h-12 w-full items-center rounded-xl px-3 py-2.5 text-sm font-medium text-slate-400 transition hover:bg-rose-500/10 hover:text-rose-200"
+                          className="flex min-h-12 w-full items-center px-3 py-2.5 font-serif text-sm text-muted transition hover:bg-bad-soft hover:text-bad"
                         >
                           Sign out
                         </button>
@@ -267,19 +295,19 @@ export default function MobileMenu({
                     <Link
                       href="/login"
                       onClick={closeMenu}
-                      className="mt-2 flex min-h-12 w-full items-center justify-center rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition hover:from-indigo-400 hover:to-violet-400"
+                      className="btn btn-primary mt-2 min-h-12 w-full px-4 py-3 font-mono text-[10px] uppercase tracking-kicker"
                     >
-                      Sign in to post
+                      Contributor sign in
                     </Link>
                   )}
                 </nav>
               </div>
 
-              <div className="border-t border-white/[0.08] px-5 py-3">
-                <p className="truncate font-mono text-[10px] text-slate-500">
+              <div className="border-t border-rule px-5 py-3">
+                <p className="truncate font-mono text-[10px] uppercase tracking-kicker text-faint">
                   {isSignedIn && username
-                    ? `SIGNED IN AS ${username}`
-                    : 'COMMUNITY-WRITTEN · EDITOR-VERIFIED'}
+                    ? `Signed in as ${username}`
+                    : 'Community-filed · editor-verified'}
                 </p>
               </div>
             </aside>
