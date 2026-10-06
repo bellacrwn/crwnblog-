@@ -19,13 +19,22 @@ create table if not exists public.categories (
   slug  text primary key,
   name  text not null,
   blurb text default '',
-  accent text default '#6366f1'
+  accent text default '#241a12',
+  kind  text not null default 'news' check (kind in ('news','review'))
 );
 
-insert into public.categories (slug, name, blurb, accent) values
-  ('cyber',     'Cyber Discovery', 'Breaches, exploits, threat research and defence.', '#22d3ee'),
-  ('tech',      'Tech Discovery',  'New tools, hardware, AI and engineering finds.',   '#a78bfa'),
-  ('celebrity', 'Celebrity News',  'Culture, entertainment and who did what.',         '#fb7185')
+-- Existing installs upgrading in place: see migrations/0002_new_desks_and_film_reviews.sql
+alter table public.categories add column if not exists kind text not null default 'news';
+
+-- Desk inks mirror src/lib/categories.ts (accent = newsprint, accentDark = walnut shell).
+-- NOTE: `on conflict do nothing` will not update desks that already exist — existing
+-- installs should run migrations/0002_new_desks_and_film_reviews.sql instead.
+insert into public.categories (slug, name, blurb, accent, kind) values
+  ('cyber',     'Cyber Discovery', 'Breaches, exploits, threat research and defence.',          '#1f4e5f', 'news'),
+  ('tech',      'Tech Discovery',  'New tools, hardware, AI and engineering finds.',            '#3d5a3d', 'news'),
+  ('celebrity', 'Celebrity News',  'Culture, entertainment and who did what.',                  '#7b2d26', 'news'),
+  ('football',  'Football',        'Matches, transfers, tactics and the business of the game.', '#8c5a1f', 'news'),
+  ('movies',    'Film & Screen',   'Reviews and recommendations, rated out of ten.',            '#4a3a63', 'review')
 on conflict (slug) do nothing;
 
 -- ---------- POSTS ----------
@@ -38,6 +47,10 @@ create table if not exists public.posts (
   excerpt       text default '' check (char_length(excerpt) <= 500),
   body_html     text not null check (char_length(body_html) between 20 and 100000), -- sanitised server-side before insert
   cover_url     text check (cover_url is null or (char_length(cover_url) <= 2048 and cover_url ~* '^https?://')),
+  -- Film & Screen review metadata (null for every other desk)
+  poster_url    text check (poster_url is null or (char_length(poster_url) <= 2048 and poster_url ~* '^https?://')),
+  rating        numeric(3,1) check (rating is null or (rating >= 0 and rating <= 10)),
+  release_year  int check (release_year is null or (release_year between 1888 and 2100)),
   status        text not null default 'pending' check (status in ('pending','published','rejected')),
   reject_reason text check (reject_reason is null or char_length(reject_reason) <= 500),
   views         int not null default 0 check (views >= 0),
@@ -120,6 +133,27 @@ drop trigger if exists trg_guard_post_updates on public.posts;
 create trigger trg_guard_post_updates
   before update on public.posts
   for each row execute function public.guard_post_updates();
+
+-- Guard trigger: review metadata (rating / year / poster) only survives on review desks.
+-- Reads `categories.kind`, so adding another review desk needs no change here.
+create or replace function public.normalize_review_fields()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if not exists (
+    select 1 from public.categories c
+    where c.slug = new.category_slug and c.kind = 'review'
+  ) then
+    new.rating       := null;
+    new.release_year := null;
+    new.poster_url   := null;
+  end if;
+  return new;
+end; $$;
+
+drop trigger if exists trg_normalize_review_fields on public.posts;
+create trigger trg_normalize_review_fields
+  before insert or update on public.posts
+  for each row execute function public.normalize_review_fields();
 
 -- profiles policies
 drop policy if exists "profiles readable" on public.profiles;

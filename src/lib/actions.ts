@@ -10,10 +10,58 @@ import {
   slugify,
   toExcerpt,
 } from '@/lib/sanitize';
+import { isCategorySlug, isReviewDesk } from '@/lib/categories';
 
 export type ActionState = { ok: boolean; message: string; slug?: string };
 
 const MAX_PENDING_POSTS_PER_USER = 5;
+const MIN_RELEASE_YEAR = 1888;
+const MAX_RELEASE_YEAR = 2100;
+
+/**
+ * Parses the optional Film & Screen review metadata.
+ * Returns nulls (never junk) for non-review desks, and an error string for bad input.
+ */
+function parseReviewFields(
+  formData: FormData,
+  category: string
+): { error?: string; rating: number | null; release_year: number | null; poster_url: string | null } {
+  const result = { rating: null as number | null, release_year: null as number | null, poster_url: null as string | null };
+
+  if (!isReviewDesk(category)) return result;
+
+  const rawRating = String(formData.get('rating') ?? '').trim();
+  if (rawRating) {
+    const n = Number(rawRating);
+    if (!Number.isFinite(n) || n < 0 || n > 10) {
+      return { ...result, error: 'Rating must be a number between 0 and 10.' };
+    }
+    result.rating = Math.round(n * 10) / 10;
+  }
+
+  const rawYear = String(formData.get('release_year') ?? '').trim();
+  if (rawYear) {
+    const y = Number(rawYear);
+    if (!Number.isInteger(y) || y < MIN_RELEASE_YEAR || y > MAX_RELEASE_YEAR) {
+      return {
+        ...result,
+        error: `Release year must be a whole year between ${MIN_RELEASE_YEAR} and ${MAX_RELEASE_YEAR}.`,
+      };
+    }
+    result.release_year = y;
+  }
+
+  const rawPoster = String(formData.get('poster_url') ?? '').trim();
+  if (rawPoster) {
+    const safe = sanitizeUrl(rawPoster);
+    if (!safe) {
+      return { ...result, error: 'Poster URL must be a valid http:// or https:// address.' };
+    }
+    result.poster_url = safe;
+  }
+
+  return result;
+}
 
 export async function submitPost(
   _prev: ActionState,
@@ -36,11 +84,17 @@ export async function submitPost(
   if (title.length < 3 || title.length > 160) {
     return { ok: false, message: 'Title must be between 3 and 160 characters.' };
   }
-  if (!['cyber', 'tech', 'celebrity'].includes(category)) {
-    return { ok: false, message: 'Pick a valid category.' };
+  // Sourced from src/lib/categories.ts so a new desk can never be blocked here.
+  if (!isCategorySlug(category)) {
+    return { ok: false, message: 'Pick a valid section.' };
   }
   if (rawBody.length > 100_000) {
     return { ok: false, message: 'Post body is too large.' };
+  }
+
+  const review = parseReviewFields(formData, category);
+  if (review.error) {
+    return { ok: false, message: review.error };
   }
 
   let cover_url: string | null = null;
@@ -90,6 +144,9 @@ export async function submitPost(
         excerpt: toExcerpt(body_html),
         body_html,
         cover_url,
+        poster_url: review.poster_url,
+        rating: review.rating,
+        release_year: review.release_year,
         status: nextStatus,
         reject_reason: isAdmin ? undefined : null,
         published_at: isAdmin ? existing.published_at ?? new Date().toISOString() : null,
@@ -144,6 +201,9 @@ export async function submitPost(
       excerpt: toExcerpt(body_html),
       body_html,
       cover_url,
+      poster_url: review.poster_url,
+      rating: review.rating,
+      release_year: review.release_year,
       status: isAdmin ? 'published' : 'pending',
       published_at: isAdmin ? new Date().toISOString() : null,
     })
