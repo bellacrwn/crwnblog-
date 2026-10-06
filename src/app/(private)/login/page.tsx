@@ -64,26 +64,27 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="panel mx-auto max-w-md rounded-3xl p-8 sm:p-10">
-      <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-indigo-400">
-        {mode === 'in' ? 'Contributor Access' : 'New Contributor'}
+    <div className="mx-auto max-w-md border border-rule bg-panel p-8 sm:p-10">
+      <span className="font-mono text-[10px] font-bold uppercase tracking-kicker text-accent">
+        {mode === 'in' ? 'Contributor access' : 'New contributor'}
       </span>
-      <h1 className="mt-1 font-display text-4xl text-white">
-        {mode === 'in' ? 'Welcome back' : 'Join crwnblog'}
+      <h1 className="mt-2 font-display text-4xl font-black tracking-tight text-ink">
+        {mode === 'in' ? 'Welcome back' : 'Join the newsroom'}
       </h1>
-      <p className="mt-1.5 text-sm text-slate-400">
+      <p className="mt-2 font-serif text-sm leading-relaxed text-muted">
         {mode === 'in'
-          ? 'Sign in to submit discoveries, manage drafts, and join discussions.'
-          : 'Create a free contributor account. Every dispatch is reviewed before going live.'}
+          ? 'Sign in to file dispatches, manage drafts and write to the desk.'
+          : 'Create a free contributor account. Every dispatch is read by an editor before it runs.'}
       </p>
 
       <form onSubmit={handle} className="mt-7 space-y-4">
         {mode === 'up' && (
-          <div>
-            <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
+          <div className="space-y-1.5">
+            <label htmlFor="username" className="label">
               Handle
             </label>
             <input
+              id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
@@ -92,29 +93,31 @@ export default function LoginPage() {
               pattern="^[a-zA-Z0-9_-]{3,24}$"
               title="3–24 characters: letters, numbers, underscores, or hyphens"
               placeholder="e.g. cyber_researcher"
-              className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+              className="field"
             />
           </div>
         )}
-        <div>
-          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
-            Email Address
+        <div className="space-y-1.5">
+          <label htmlFor="email" className="label">
+            Email address
           </label>
           <input
+            id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             type="email"
             required
             autoComplete="email"
             placeholder="you@domain.com"
-            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+            className="field"
           />
         </div>
-        <div>
-          <label className="mb-1.5 block font-mono text-[10px] uppercase tracking-widest text-slate-400">
+        <div className="space-y-1.5">
+          <label htmlFor="password" className="label">
             Password
           </label>
           <input
+            id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             type="password"
@@ -122,19 +125,23 @@ export default function LoginPage() {
             minLength={mode === 'up' ? 8 : 6}
             autoComplete={mode === 'up' ? 'new-password' : 'current-password'}
             placeholder={mode === 'up' ? 'At least 8 characters' : '••••••••'}
-            className="w-full rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white outline-none focus:border-indigo-500"
+            className="field"
           />
         </div>
         <button
           disabled={busy}
-          className="w-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400 disabled:opacity-50"
+          className="btn btn-primary w-full py-3 font-mono text-[10px] uppercase tracking-kicker disabled:opacity-50"
         >
-          {busy ? 'Authenticating…' : mode === 'in' ? 'Sign in →' : 'Create contributor account →'}
+          {busy
+            ? 'Authenticating…'
+            : mode === 'in'
+            ? 'Sign in →'
+            : 'Create contributor account →'}
         </button>
       </form>
 
       {msg && (
-        <p className="mt-4 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-2.5 text-xs text-amber-200">
+        <p className="mt-4 border border-warn bg-warn-soft px-4 py-2.5 font-serif text-xs text-ink">
           {msg}
         </p>
       )}
@@ -145,7 +152,7 @@ export default function LoginPage() {
           setMode(mode === 'in' ? 'up' : 'in');
           setMsg('');
         }}
-        className="mt-6 w-full text-center text-xs font-medium text-slate-400 transition hover:text-white"
+        className="mt-6 w-full text-center font-mono text-[10px] uppercase tracking-kicker text-faint transition hover:text-accent"
       >
         {mode === 'in'
           ? 'Need a contributor account? Create one →'

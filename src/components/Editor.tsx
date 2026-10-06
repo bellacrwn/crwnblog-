@@ -67,18 +67,22 @@ export default function Editor({
 
   const readMins = Math.max(1, Math.round(words / 220));
 
+  const toolBtn =
+    'px-2.5 py-1 font-mono text-[11px] font-bold text-muted transition hover:bg-accent-soft hover:text-accent';
+
   return (
-    <div className="panel overflow-hidden rounded-2xl">
+    <div className="overflow-hidden border border-rule bg-panel">
       {/* Top bar: Mode Tabs + Toolbar */}
-      <div className="flex flex-wrap items-center gap-1.5 border-b border-white/[0.08] bg-black/40 px-3 py-2.5">
-        <div className="mr-2 flex rounded-lg border border-white/10 bg-black/50 p-0.5">
+      <div className="flex flex-wrap items-center gap-1.5 border-b border-rule bg-panel2 px-3 py-2.5">
+        <div className="mr-2 flex border border-rule-mid bg-inset p-0.5">
           <button
             type="button"
             onClick={() => setTab('write')}
-            className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
+            aria-pressed={tab === 'write'}
+            className={`px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-kicker transition ${
               tab === 'write'
-                ? 'bg-indigo-500 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-accent text-[var(--on-accent)]'
+                : 'text-muted hover:text-ink'
             }`}
           >
             Write
@@ -89,10 +93,11 @@ export default function Editor({
               sync();
               setTab('preview');
             }}
-            className={`rounded-md px-3 py-1 text-xs font-semibold transition ${
+            aria-pressed={tab === 'preview'}
+            className={`px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-kicker transition ${
               tab === 'preview'
-                ? 'bg-indigo-500 text-white shadow'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-accent text-[var(--on-accent)]'
+                : 'text-muted hover:text-ink'
             }`}
           >
             Live Preview
@@ -107,48 +112,48 @@ export default function Editor({
                 type="button"
                 title={b.title}
                 onClick={() => run(b.cmd, b.arg)}
-                className="min-w-[2.1rem] rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+                className={`min-w-[2.1rem] ${toolBtn}`}
               >
                 {b.label}
               </button>
             ))}
-            <span className="mx-1 h-4 w-px bg-white/10" />
+            <span className="mx-1 h-4 w-px bg-rule-mid" />
             <button
               type="button"
               onClick={() => setUrlPrompt({ type: 'link', value: '' })}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className={toolBtn}
             >
               🔗 Link
             </button>
             <button
               type="button"
               onClick={() => setUrlPrompt({ type: 'image', value: '' })}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-300 transition hover:bg-white/10 hover:text-white"
+              className={toolBtn}
             >
               🖼 Image
             </button>
             <button
               type="button"
               onClick={() => run('removeFormat')}
-              className="rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-400 transition hover:bg-white/10 hover:text-white"
+              className={`${toolBtn} text-faint`}
             >
               Clear
             </button>
           </>
         )}
 
-        <div className="ml-auto flex items-center gap-2 pr-1 font-mono text-[11px] text-slate-400">
+        <div className="ml-auto flex items-center gap-2 pr-1 font-mono text-[10px] uppercase tracking-kicker text-faint">
           <span>{words} words</span>
-          <span>·</span>
+          <span aria-hidden>·</span>
           <span>~{readMins} min read</span>
         </div>
       </div>
 
-      {/* Inline URL Popover (replaces native browser prompt) */}
+      {/* Inline URL popover */}
       {urlPrompt && (
-        <div className="flex flex-wrap items-center gap-2 border-b border-white/[0.08] bg-indigo-950/30 px-4 py-2.5">
-          <span className="text-xs font-semibold text-indigo-300">
-            {urlPrompt.type === 'link' ? 'Insert Link URL:' : 'Insert Image URL:'}
+        <div className="flex flex-wrap items-center gap-2 border-b border-rule bg-accent-soft px-4 py-2.5">
+          <span className="font-mono text-[10px] font-bold uppercase tracking-kicker text-accent">
+            {urlPrompt.type === 'link' ? 'Insert link URL:' : 'Insert image URL:'}
           </span>
           <input
             type="url"
@@ -156,26 +161,26 @@ export default function Editor({
             onChange={(e) => setUrlPrompt({ ...urlPrompt, value: e.target.value })}
             placeholder="https://example.com/..."
             autoFocus
-            className="flex-1 rounded-lg border border-white/15 bg-black/50 px-3 py-1 text-xs text-white outline-none focus:border-indigo-400"
+            className="field flex-1 py-1.5 font-mono text-xs"
           />
           <button
             type="button"
             onClick={applyUrlInsert}
-            className="rounded-lg bg-indigo-500 px-3 py-1 text-xs font-semibold text-white hover:bg-indigo-400"
+            className="btn btn-primary px-3 py-1.5 font-mono text-[10px] uppercase tracking-kicker"
           >
             Insert
           </button>
           <button
             type="button"
             onClick={() => setUrlPrompt(null)}
-            className="rounded-lg px-2 py-1 text-xs text-slate-400 hover:text-white"
+            className="px-2 py-1 font-mono text-[10px] uppercase tracking-kicker text-faint hover:text-ink"
           >
             Cancel
           </button>
         </div>
       )}
 
-      {/* Editor Surface */}
+      {/* Editor surface */}
       <div
         ref={ref}
         contentEditable
@@ -194,19 +199,17 @@ export default function Editor({
         }`}
       />
 
-      {/* Live Preview Surface */}
+      {/* Live preview surface */}
       {tab === 'preview' && (
-        <div className="min-h-[380px] bg-black/20 px-6 py-5">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-indigo-400/25 bg-indigo-500/10 px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-indigo-300">
-            Article Preview
-          </div>
+        <div className="min-h-[380px] bg-inset px-6 py-5">
+          <span className="chip text-accent">Article preview</span>
           {html.trim() ? (
             <div
-              className="prose-crwn max-w-none"
+              className="prose-crwn mt-3 max-w-none"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           ) : (
-            <p className="py-16 text-center text-sm italic text-slate-500">
+            <p className="py-16 text-center font-serif text-sm italic text-faint">
               Nothing written yet — switch back to the Write tab to start drafting.
             </p>
           )}

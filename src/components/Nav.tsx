@@ -1,8 +1,12 @@
 import Link from 'next/link';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, deskVar } from '@/lib/categories';
 import { createClient, getSession, isConfigured } from '@/lib/supabase/server';
 import { signOut } from '@/lib/actions';
 
+/**
+ * Contributor shell bar — deep walnut. Deliberately plainer than the public
+ * Masthead: this is a workspace, not the front page.
+ */
 export default async function Nav() {
   const { user, profile } = await getSession();
 
@@ -27,50 +31,44 @@ export default async function Nav() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/[0.08] bg-[#05060a]/80 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl items-center gap-6 px-5 py-3.5">
-        <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-          <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-indigo-500 via-violet-500 to-cyan-400 text-sm font-black text-black shadow-md shadow-indigo-500/20 transition group-hover:scale-105">
-            C
+    <header className="sticky top-0 z-40 border-b border-rule bg-bg/95 backdrop-blur-sm">
+      <div className="mx-auto flex max-w-5xl items-center gap-5 px-5 py-3">
+        <Link href="/" className="group flex shrink-0 items-baseline gap-2">
+          <span className="font-masthead text-2xl leading-none text-fg transition group-hover:text-accent">
+            crwnblog
           </span>
-          <div className="flex flex-col">
-            <span className="text-lg font-extrabold leading-none tracking-tight text-white">
-              crwn<span className="text-indigo-400">blog</span>
-            </span>
-            <span className="mt-0.5 font-mono text-[9px] uppercase tracking-widest text-slate-500">
-              Dispatches
-            </span>
-          </div>
+          <span className="hidden font-mono text-[9px] uppercase tracking-kicker text-faint sm:inline">
+            Newsroom
+          </span>
         </Link>
 
-        <nav className="hidden items-center gap-1 md:flex">
+        <nav className="hidden items-center gap-4 md:flex">
+          <Link
+            href="/"
+            className="font-mono text-[10px] font-bold uppercase tracking-kicker text-muted transition hover:text-fg"
+          >
+            Front Page
+          </Link>
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
-              className="group flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm font-medium text-slate-300 transition hover:bg-white/[0.06] hover:text-white"
+              className="font-mono text-[10px] font-bold uppercase tracking-kicker transition hover:underline"
+              style={{ color: deskVar(c.slug) }}
             >
-              <span
-                className="h-1.5 w-1.5 rounded-full transition group-hover:scale-125"
-                style={{ backgroundColor: c.accent }}
-              />
-              {c.name}
+              {c.short}
             </Link>
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-2 text-sm">
+        <div className="ml-auto flex items-center gap-2">
           {profile?.role === 'admin' && (
             <Link
               href="/admin"
-              className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-400/10 px-3.5 py-1.5 text-xs font-semibold text-amber-300 transition hover:bg-amber-400/20"
+              className="btn btn-ghost px-3 py-1.5 font-mono text-[10px] uppercase tracking-kicker text-accent"
+              style={{ borderColor: 'var(--accent)' }}
             >
-              <span>Queue</span>
-              {pendingCount > 0 && (
-                <span className="rounded-full bg-amber-400 px-1.5 py-0.2 font-mono text-[10px] font-bold text-black">
-                  {pendingCount}
-                </span>
-              )}
+              Queue{pendingCount > 0 ? ` · ${pendingCount}` : ''}
             </Link>
           )}
 
@@ -78,26 +76,27 @@ export default async function Nav() {
             <>
               <Link
                 href="/dashboard"
-                className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.09] bg-white/[0.03] px-3.5 py-1.5 text-xs font-medium text-slate-200 transition hover:border-white/20 hover:bg-white/[0.07]"
+                className="btn btn-ghost px-3 py-1.5 font-mono text-[10px] uppercase tracking-kicker"
               >
-                <span>My Posts</span>
+                My Posts
                 {rejectedCount > 0 && (
                   <span
                     title="Posts needing revision"
-                    className="h-2 w-2 rounded-full bg-rose-400"
+                    className="ml-1 h-1.5 w-1.5 rounded-full"
+                    style={{ backgroundColor: 'var(--bad)' }}
                   />
                 )}
               </Link>
               <Link
                 href="/write"
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400"
+                className="btn btn-primary px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-kicker"
               >
-                <span>+ Write</span>
+                + Write
               </Link>
               <form action={signOut}>
                 <button
                   title={`Signed in as ${profile?.username ?? user.email}`}
-                  className="rounded-full px-2.5 py-1.5 text-xs text-slate-400 transition hover:bg-white/[0.05] hover:text-white"
+                  className="px-2 py-1.5 font-mono text-[10px] uppercase tracking-kicker text-faint transition hover:text-fg"
                 >
                   Sign out
                 </button>
@@ -106,33 +105,30 @@ export default async function Nav() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-indigo-500 to-violet-500 px-4 py-1.5 text-xs font-semibold text-white shadow-md shadow-indigo-500/25 transition hover:from-indigo-400 hover:to-violet-400"
+              className="btn btn-primary px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-kicker"
             >
-              Sign in to post
+              Sign in
             </Link>
           )}
         </div>
       </div>
 
-      {/* Mobile category strip */}
-      <div className="flex items-center gap-2 overflow-x-auto border-t border-white/[0.05] px-5 py-2 md:hidden">
+      {/* Mobile section strip */}
+      <div className="flex items-center gap-3 overflow-x-auto border-t border-rule px-5 py-1.5 md:hidden">
         <Link
           href="/"
-          className="shrink-0 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300"
+          className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-kicker text-muted"
         >
-          All Feed
+          Front Page
         </Link>
         {CATEGORIES.map((c) => (
           <Link
             key={c.slug}
             href={`/category/${c.slug}`}
-            className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/[0.07] bg-white/[0.02] px-3 py-1 text-xs font-medium text-slate-300"
+            className="shrink-0 font-mono text-[10px] font-bold uppercase tracking-kicker"
+            style={{ color: deskVar(c.slug) }}
           >
-            <span
-              className="h-1.5 w-1.5 rounded-full"
-              style={{ backgroundColor: c.accent }}
-            />
-            {c.name}
+            {c.short}
           </Link>
         ))}
       </div>
